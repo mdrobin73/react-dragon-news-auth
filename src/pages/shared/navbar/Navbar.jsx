@@ -1,11 +1,30 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import userImage from "../../../assets/user.png";
+import { useContext } from "react";
+import { AuthContext } from "../../../providers/AuthProvider";
 
 const Navbar = () => {
+
+    const {user, logOut} = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const handleSignOut = () => {
+        logOut()
+        .then(() => {
+            navigate("/login");
+            console.log("Successfully logged out!")
+        })
+        .catch(error => {
+            console.error(error);
+        })
+    }
+
     const navLinks = <>
         <li><NavLink to={"/"}>Home</NavLink></li>
         <li><NavLink to={"/about"}>About</NavLink></li>
         <li><NavLink to={"/career"}>Career</NavLink></li>
+        <li><NavLink to={"/login"}>Login</NavLink></li>
+        <li><NavLink to={"/register"}>Register</NavLink></li>
     </>
     return (
         <div className="mt-3 mb-12">
@@ -31,7 +50,12 @@ const Navbar = () => {
                             <img alt="Tailwind CSS Navbar component" src={userImage} />
                         </div>
                     </div>
-                    <Link to={"/login"} className="bg-gray-700 text-white py-1 px-6 font-semibold ml-2">Login</Link>
+                    {
+                        user ?
+                        <button onClick={handleSignOut} className="bg-gray-700 text-white py-1 px-5 font-semibold ml-2">Log out</button>
+                        : <Link to={"/login"} className="bg-gray-700 text-white py-1 px-5 font-semibold ml-2">Login</Link>
+                    }
+                    
                 </div>
             </div>
         </div>
